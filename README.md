@@ -2,9 +2,10 @@
 - [`Overview`](#Overview)
 - [`Setup Instructions`](#Setup-Instructions)
 - [`Docker Documentation`](#Docker-Documentation)
-- [`CI/CD Pipeline`](#CI-CD-Pipeline)
-- [`API Links`](#API-Links)
+- [`Swagger UI`](#Swagger-UI)
 - [`Flowchart`](#Flowchart)
+- [`API Links`](#API-Links)
+
 ## Overview
 Gets the list of all the standing for a given league id, country name and team name.
 
@@ -21,6 +22,14 @@ In addition to the above technologies I have used the following libraries -
 4. **Open API** - The OpenAPI Specification, previously known as the Swagger Specification, is a specification for machine-readable interface files for describing, producing, consuming, and visualizing RESTful web services.
 5. **Spring Actuators** - Monitoring our app, gathering metrics, understanding traffic, or the state of our database become trivial with this dependency.
 6. **Lombok** - I used lombok to avoid writing boilerplate code such as constructors, getter-setter etc.
+
+
+## Swagger-UI
+![Alt text](swagger-ui.png?raw=true "Swagger Home Page")
+
+## Flowchart
+![Alt text](flowchart.svg?raw=true "Flowchart")
+
 
 ## Setup Instructions
 
@@ -42,6 +51,3 @@ We can deploy this application in various environments such as dev, test, qa and
 | Environment |http://localhost:8080/football-standing/_manage/env|https://dev.football.standing.com/football-standing/_manage/env| https://test.football.standing.com/football-standing/_manage/env| https://stage.football.standing.com/football-standing/_manage/env|https://football.standing.com/football-standing/_manage/env|  
 | Information (Git) |http://localhost:8080/football-standing/_manage/info|https://dev.football.standing.com/football-standing/_manage/info|https://test.football.standing.com/football-standing/_manage/info|https://stage.football.standing.com/football-standing/_manage/info|https://football.standing.com/football-standing/_manage/info|
 | Swagger |http://localhost:8080/football-standing/swagger-ui.html| https://dev.football.standing.com/football-standing/swagger-ui.html| https://test.football.standing.com/football-standing/swagger-ui.html|https://stage.football.standing.com/football-standing/swagger-ui.html | https://football.standing.com/football-standing/swagger-ui.html|
-
-## Flowchart
-![Alt text](flowchart.svg?raw=true "Title")

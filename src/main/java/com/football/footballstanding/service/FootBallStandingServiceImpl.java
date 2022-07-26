@@ -58,8 +58,8 @@ public class FootBallStandingServiceImpl implements FootBallStandingService {
             throw new FootballStandingException(exception.getMessage());
         }
         List<Standing> standings = filterResults(handleResponse(response, leagueId), countryName, teamName);
-        if (standings.isEmpty()){
-           throw new NoDataFoundForTheFilterException(leagueId, countryName, teamName);
+        if (standings.isEmpty()) {
+            throw new NoDataFoundForTheFilterException(leagueId, countryName, teamName);
         }
         return standings;
     }
@@ -69,19 +69,20 @@ public class FootBallStandingServiceImpl implements FootBallStandingService {
         //filter by both country name and team name
         if (countryName.isPresent() && StringUtils.isNotEmpty(countryName.get()) && teamName.isPresent() &&
                 StringUtils.isNotEmpty(teamName.get())) {
-            return standings.stream().filter(standing -> standing.getCountryName().equals(countryName.get().trim()))
-                            .filter(standing -> standing.getTeamName().equals(teamName.get())).collect(
-                    Collectors.toList());
+            return standings.stream().filter(
+                standing -> standing.getCountryName().equalsIgnoreCase(countryName.get().trim())).filter(
+                standing -> standing.getTeamName().equalsIgnoreCase(teamName.get())).collect(Collectors.toList());
         }
         //filter by only country name
         if (countryName.isPresent() && StringUtils.isNotEmpty(countryName.get())) {
-            return standings.stream().filter(standing -> standing.getCountryName().equals(countryName.get().trim()))
-                            .collect(Collectors.toList());
+            return standings.stream().filter(
+                standing -> standing.getCountryName().equalsIgnoreCase(countryName.get().trim())).collect(
+                Collectors.toList());
         }
         //filter by only team name
         if (teamName.isPresent() && StringUtils.isNotEmpty(teamName.get())) {
-            return standings.stream().filter(standing -> standing.getTeamName().equals(teamName.get().trim())).collect(
-                Collectors.toList());
+            return standings.stream().filter(standing -> standing.getTeamName().equalsIgnoreCase(teamName.get().trim()))
+                            .collect(Collectors.toList());
         }
         return standings;
     }

@@ -4,6 +4,7 @@ import com.football.footballstanding.domain.Standing;
 import com.football.footballstanding.exception.AuthenticationFailureException;
 import com.football.footballstanding.exception.FootballStandingException;
 import com.football.footballstanding.exception.NoDataFoundException;
+import com.football.footballstanding.exception.NoDataFoundForTheFilterException;
 import com.football.footballstanding.feign.client.FootballApiClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,6 +46,27 @@ class FootBallStandingServiceImplTest {
         List<Standing> actualStandings = footBallStandingService.getStandings(100, Optional.ofNullable(null),
             Optional.ofNullable(null));
         Assertions.assertEquals(expectedStandings, actualStandings);
+        verify(footballApiClient, times(1)).getStandings(eq("get_standings"), eq(100), eq("XXXXX"));
+    }
+
+    @Test
+    public void shouldReturnListOfStandingsWithCountryNameAndTeamNameFilter() {
+        List<Standing> expectedStandings = getExpectedStandings();
+        when(footballApiClient.getStandings(eq("get_standings"), eq(100), eq("XXXXX"))).thenReturn(expectedStandings);
+        List<Standing> actualStandings = footBallStandingService.getStandings(100, Optional.of("India"),
+            Optional.of("sky"));
+        Assertions.assertEquals(expectedStandings, actualStandings);
+        verify(footballApiClient, times(1)).getStandings(eq("get_standings"), eq(100), eq("XXXXX"));
+    }
+
+    @Test
+    public void shouldThrowNoDataFoundForTheFilterException() {
+        List<Standing> expectedStandings = getExpectedStandings();
+        when(footballApiClient.getStandings(eq("get_standings"), eq(100), eq("XXXXX"))).thenReturn(expectedStandings);
+        assertThrows(NoDataFoundForTheFilterException.class,
+            () -> footBallStandingService.getStandings(100, Optional.of("RANDOM_COUNTRY"), Optional.of("TEAM")),
+            String.format("No standings for the league id - %d, countryName - %s and teamName - %s", 100,
+                "RANDOM_COUNTRY", "TEAM"));
         verify(footballApiClient, times(1)).getStandings(eq("get_standings"), eq(100), eq("XXXXX"));
     }
 
@@ -97,7 +119,8 @@ class FootBallStandingServiceImplTest {
 
     private List<Standing> getExpectedStandings() {
         List<Standing> expectedStandings = new ArrayList<>();
-        expectedStandings.add(Standing.builder().teamId("23").leagueId("100").build());
+        expectedStandings.add(Standing.builder().teamId("23").leagueId("100").countryName("India").teamName("SKY")
+                                      .build());
         return expectedStandings;
     }
 
