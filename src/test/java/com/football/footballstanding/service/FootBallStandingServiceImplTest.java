@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
@@ -41,7 +42,8 @@ class FootBallStandingServiceImplTest {
     public void shouldReturnListOfStandings() {
         List<Standing> expectedStandings = getExpectedStandings();
         when(footballApiClient.getStandings(eq("get_standings"), eq(100), eq("XXXXX"))).thenReturn(expectedStandings);
-        List<Standing> actualStandings = footBallStandingService.getStandings(100);
+        List<Standing> actualStandings = footBallStandingService.getStandings(100, Optional.ofNullable(null),
+            Optional.ofNullable(null));
         Assertions.assertEquals(expectedStandings, actualStandings);
         verify(footballApiClient, times(1)).getStandings(eq("get_standings"), eq(100), eq("XXXXX"));
     }
@@ -50,7 +52,8 @@ class FootBallStandingServiceImplTest {
     public void shouldThrowNoDataFoundException() {
         LinkedHashMap invalidResponse = getInvalidResponse("400", "No league found (please check your plan)!!");
         when(footballApiClient.getStandings(eq("get_standings"), eq(100), eq("XXXXX"))).thenReturn(invalidResponse);
-        assertThrows(NoDataFoundException.class, () -> footBallStandingService.getStandings(100),
+        assertThrows(NoDataFoundException.class,
+            () -> footBallStandingService.getStandings(100, Optional.ofNullable(null), Optional.ofNullable(null)),
             String.format("No league found for the id %d (please check your plan or the league id)", 100));
         verify(footballApiClient, times(1)).getStandings(eq("get_standings"), eq(100), eq("XXXXX"));
     }
@@ -59,7 +62,8 @@ class FootBallStandingServiceImplTest {
     public void shouldThrowAuthenticationFailureException() {
         LinkedHashMap invalidResponse = getInvalidResponse("401", "Authentification failed!");
         when(footballApiClient.getStandings(eq("get_standings"), eq(100), eq("XXXXX"))).thenReturn(invalidResponse);
-        assertThrows(AuthenticationFailureException.class, () -> footBallStandingService.getStandings(100),
+        assertThrows(AuthenticationFailureException.class,
+            () -> footBallStandingService.getStandings(100, Optional.ofNullable(null), Optional.ofNullable(null)),
             "Authentication failed! Invalid API key, please check your API Key");
         verify(footballApiClient, times(1)).getStandings(eq("get_standings"), eq(100), eq("XXXXX"));
     }
@@ -67,7 +71,8 @@ class FootBallStandingServiceImplTest {
     @Test
     public void shouldThrowFootballStandingException() {
         when(footballApiClient.getStandings(eq("get_standings"), eq(100), eq("XXXXX"))).thenReturn(null);
-        assertThrows(FootballStandingException.class, () -> footBallStandingService.getStandings(100),
+        assertThrows(FootballStandingException.class,
+            () -> footBallStandingService.getStandings(100, Optional.ofNullable(null), Optional.ofNullable(null)),
             "Received empty response from the Football API server");
         verify(footballApiClient, times(1)).getStandings(eq("get_standings"), eq(100), eq("XXXXX"));
     }
@@ -76,7 +81,8 @@ class FootBallStandingServiceImplTest {
     public void shouldThrowFootballStandingExceptionWhenApiIsDown() {
         when(footballApiClient.getStandings(eq("get_standings"), eq(100), eq("XXXXX"))).thenThrow(
             new RuntimeException("ERROR"));
-        assertThrows(FootballStandingException.class, () -> footBallStandingService.getStandings(100),
+        assertThrows(FootballStandingException.class,
+            () -> footBallStandingService.getStandings(100, Optional.ofNullable(null), Optional.ofNullable(null)),
             "Oops! Something went wrong, we are working on it please try again after sometime. Detailed Exception - " +
                 "ERROR");
         verify(footballApiClient, times(1)).getStandings(eq("get_standings"), eq(100), eq("XXXXX"));

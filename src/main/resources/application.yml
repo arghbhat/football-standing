@@ -3,11 +3,18 @@ server:
   servlet:
     context-path: /football-standing
 
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /_manage
+      exposure:
+        include: health, env, info
+
 football-api-service:
   url: https://apiv3.apifootball.com/
   api-key: 9bb66184e0c8145384fd2cc0f7b914ada57b4e8fd2e4d6d586adcc27c257a978
 
 
-spring:
-  jackson:
-    default-property-inclusion: always

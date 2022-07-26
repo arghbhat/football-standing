@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.football.footballstanding.constant.Constants.REQUEST_PARAM_LEAGUE_ID;
 import static com.football.footballstanding.constant.UrlConfig.GET_STANDINGS;
@@ -44,21 +45,29 @@ public class FootballController {
             content = @Content(schema = @Schema(implementation = ErrorModel.class)))})
     @GetMapping(value = GET_STANDINGS, produces = {"application/hal+json"})
     public HttpEntity<CollectionModel<Standing>> getStandings(
-        @RequestParam(name = REQUEST_PARAM_LEAGUE_ID) Integer leagueId) {
+        @RequestParam(name = REQUEST_PARAM_LEAGUE_ID) Integer leagueId,
+        @RequestParam(name = "countryName") Optional<String> countryName,
+        @RequestParam(name = "teamName") Optional<String> teamName) {
         log.info("FootballController: getStandings() called with league id - " + leagueId);
-        List<Standing> standings = footBallStandingService.getStandings(leagueId);
-        return new ResponseEntity<>(addSelfLink(leagueId, standings), HttpStatus.OK);
+        List<Standing> standings = footBallStandingService.getStandings(leagueId, countryName, teamName);
+        log.info("FootballController: getStandings() returning results - " + standings.size() +
+                     " for the league - " + leagueId);
+        return new ResponseEntity<>(addSelfLink(leagueId, countryName, teamName, standings), HttpStatus.OK);
     }
 
     /**
      * adds a new self link by making a fake calle
      *
      * @param leagueId to make call
+     * @param countryName
+     * @param teamName
      * @param standings this will be updated
      * @return returns a collectionModel
      */
-    private CollectionModel<Standing> addSelfLink(Integer leagueId, List<Standing> standings) {
-        Link link = linkTo(methodOn(FootballController.class).getStandings(leagueId)).withSelfRel();
+    private CollectionModel<Standing> addSelfLink(Integer leagueId, Optional<String> countryName,
+        Optional<String> teamName, List<Standing> standings) {
+        Link link = linkTo(
+            methodOn(FootballController.class).getStandings(leagueId, countryName, teamName)).withSelfRel();
         return CollectionModel.of(standings, link);
     }
 }

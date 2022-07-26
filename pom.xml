@@ -12,7 +12,7 @@
     <artifactId>football-standing</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>football-standing</name>
-    <description>This is a Java 8 / Maven / Spring Boot / Angular application that can provide football data of all
+    <description>This is a Java 8 / Maven / Spring Boot that can provide football data of all
         major leagues, countries and teams.
     </description>
     <properties>

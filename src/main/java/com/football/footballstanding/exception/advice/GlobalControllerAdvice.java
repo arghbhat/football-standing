@@ -4,6 +4,7 @@ import com.football.footballstanding.domain.ErrorModel;
 import com.football.footballstanding.exception.AuthenticationFailureException;
 import com.football.footballstanding.exception.FootballStandingException;
 import com.football.footballstanding.exception.NoDataFoundException;
+import com.football.footballstanding.exception.NoDataFoundForTheFilterException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,11 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoDataFoundException.class)
     public ResponseEntity<Object> handleNodataFoundException(NoDataFoundException ex, WebRequest request) {
+        return new ResponseEntity<>(getErrorModel(HttpStatus.BAD_REQUEST, ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoDataFoundForTheFilterException.class)
+    public ResponseEntity<Object> handleNoDataFoundForTheFilterException(NoDataFoundForTheFilterException ex, WebRequest request) {
         return new ResponseEntity<>(getErrorModel(HttpStatus.BAD_REQUEST, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

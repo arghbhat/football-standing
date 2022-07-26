@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.football.footballstanding.constant.UrlConfig.GET_STANDINGS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +34,8 @@ class FootballControllerTest {
     @Test
     public void shouldReturnListOfStandings() throws Exception {
         List<Standing> standings = Collections.singletonList(Standing.builder().build());
-        when(footBallStandingService.getStandings(anyInt())).thenReturn(standings);
+        when(footBallStandingService.getStandings(anyInt(), Optional.ofNullable(null),
+            Optional.ofNullable(null))).thenReturn(standings);
         MvcResult mvcResult = mockMvc.perform(get(GET_STANDINGS + "?league_id=100")).andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
@@ -41,7 +43,8 @@ class FootballControllerTest {
 
     @Test
     public void shouldThrowNoDataFoundException() throws Exception {
-        when(footBallStandingService.getStandings(anyInt())).thenThrow(new NoDataFoundException(100));
+        when(footBallStandingService.getStandings(anyInt(), Optional.ofNullable(null),
+            Optional.ofNullable(null))).thenThrow(new NoDataFoundException(100));
         MvcResult mvcResult = mockMvc.perform(get(GET_STANDINGS + "?league_id=100")).andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -49,7 +52,8 @@ class FootballControllerTest {
 
     @Test
     public void shouldThrowAuthenticationFailureException() throws Exception {
-        when(footBallStandingService.getStandings(anyInt())).thenThrow(new AuthenticationFailureException());
+        when(footBallStandingService.getStandings(anyInt(), Optional.ofNullable(null),
+            Optional.ofNullable(null))).thenThrow(new AuthenticationFailureException());
         MvcResult mvcResult = mockMvc.perform(get(GET_STANDINGS + "?league_id=100")).andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
